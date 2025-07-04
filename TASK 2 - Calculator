@@ -1,0 +1,76 @@
+import tkinter as tk
+from tkinter import*
+
+# main GUI window
+cal = Tk()
+cal.title("Calculator") 
+operator=""
+bracket_open = True  
+text_Input = StringVar()
+# Entry widget to display the input and results
+text_Display = Entry(cal, font=('arial', 20, 'bold'), textvariable=text_Input, bd=30, insertwidth=4, bg="mistyrose", justify='right').grid(columnspan=4)
+# colors - azure, cadetblue, cornflowerblue, honeydew, lavender, lavenderblush, mistyrose, thistle, 
+
+# function for numbers
+def btnClick(numbers):
+    global operator
+    operator = operator + str(numbers)
+    text_Input.set(operator)
+
+# function for clear
+def btnClearDisplay():
+    global operator
+    operator=""
+    text_Input.set("")
+
+def btnEqualsInput():
+    global operator
+    expression = operator.replace('%', '/100')
+    if expression:  # Only evaluate if expression is not empty
+        result = str(eval(expression))
+        text_Input.set(result)
+        operator = ""
+
+# Percentage
+def btnPercent():
+    global operator
+    operator += "%"
+    text_Input.set(operator)
+
+# Toggle brackets (first click = (, second = ), repeat...)
+def btnBracket():
+    global operator, bracket_open
+    if bracket_open:
+        operator += "("
+        bracket_open = False
+    else:
+        operator += ")"
+        bracket_open = True
+    text_Input.set(operator)
+
+# buttons
+btnC = Button(cal, padx=16, bd=8, bg="mistyrose",command= btnClearDisplay, fg="black", font = ('arial', 20, 'bold'), text="C").grid(row=1, column = 0) 
+btnB = Button(cal, padx=16, bd=8, bg="lavenderblush", command = btnBracket, fg="black", font = ('arial', 20, 'bold'), text="()").grid(row=1, column = 1) 
+btnP = Button(cal, padx=16, bd=8, bg="lavenderblush", command=btnPercent, fg="black", font = ('arial', 20, 'bold'), text="%").grid(row=1, column = 2) 
+btnD = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick("/"), fg="black", font = ('arial', 20, 'bold'), text="/").grid(row=1, column = 3) 
+
+btn7 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(7), fg="black", font = ('arial', 20, 'bold'), text="7").grid(row=2, column = 0) 
+btn8 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(8), fg="black", font = ('arial', 20, 'bold'), text="8").grid(row=2, column = 1) 
+btn9 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(9), fg="black", font = ('arial', 20, 'bold'), text="9").grid(row=2, column = 2)
+btnM = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick("*"), fg="black", font = ('arial', 20, 'bold'), text="x").grid(row=2, column = 3)
+
+btn4 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(4), fg="black", font = ('arial', 20, 'bold'), text="4").grid(row=3, column = 0) 
+btn5 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(5), fg="black", font = ('arial', 20, 'bold'), text="5").grid(row=3, column = 1) 
+btn6 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(6),fg="black", font = ('arial', 20, 'bold'), text="6").grid(row=3, column = 2)
+btnS = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick("-"), fg="black", font = ('arial', 20, 'bold'), text="-").grid(row=3, column = 3)
+
+btn1 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(1),fg="black", font = ('arial', 20, 'bold'), text="1").grid(row=4, column = 0) 
+btn2 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(2),fg="black", font = ('arial', 20, 'bold'), text="2").grid(row=4, column = 1) 
+btn3 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(3),fg="black", font = ('arial', 20, 'bold'), text="3").grid(row=4, column = 2)
+btnA = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick("+"), fg="black", font = ('arial', 20, 'bold'), text="+").grid(row=4, column = 3)
+
+btnDo = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick("."), fg="black", font = ('arial', 20, 'bold'), text=".").grid(row=5, column = 0) 
+btn0 = Button(cal, padx=16, bd=8, bg="lavenderblush", command=lambda:btnClick(0), fg="black", font = ('arial', 20, 'bold'), text="0").grid(row=5, column = 1) 
+btnE = Button(cal, padx=55, bd=8, bg="mistyrose", command=btnEqualsInput, fg="black", font = ('arial', 20, 'bold'), text="=").grid(row=5, column = 2, columnspan=2)
+
+cal.mainloop()
