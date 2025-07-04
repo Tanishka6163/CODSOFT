@@ -1,0 +1,142 @@
+from tkinter import *
+from PIL import Image, ImageTk 
+import imageio 
+from random import randint
+
+root = Tk()
+root.title("Rock🪨-Paper📄-Scissor ✄")
+root.configure(background="thistle")
+#cadetblue, cornflowerblue, honeydew, lavender, lavenderblush, mistyrose, thistle, 
+
+# Function to load animated GIF frames using imageio
+def load_gif_frames(path):
+    gif = imageio.mimread(path)
+    frames = [ImageTk.PhotoImage(Image.fromarray(frame)) for frame in gif]
+    return frames
+
+# Animate the GIF in a Label ONLY ONCE
+def animate_gif_once(label, frames, index=0):
+    if index < len(frames):
+        frame = frames[index]
+        label.config(image=frame)
+        label.image = frame
+        label.after_id = root.after(100, animate_gif_once, label, frames, index + 1)
+    else:
+        label.config(image=frames[-1])
+        label.image = frames[-1]
+
+# Stop any ongoing animation
+def stop_animation(label):
+    if hasattr(label, "after_id"):
+        root.after_cancel(label.after_id)
+
+# Load GIFs
+rock_img = load_gif_frames("u_stone.gif")
+paper_img = load_gif_frames("u_paper.gif")
+scissor_img = load_gif_frames("u_scissor.gif")
+
+rock_img_comp = load_gif_frames("c_stone.gif")
+paper_img_comp = load_gif_frames("c_paper.gif")
+scissor_img_comp = load_gif_frames("c_scissor.gif")
+
+# Labels for user and comp
+user_label = Label(root, bg="mistyrose")
+comp_label = Label(root, bg="mistyrose")
+user_label.grid(row=1, column=4)
+comp_label.grid(row=1, column=0)
+
+# Score Labels 
+playerScore = Label(root, text=0, font=100, bg="mistyrose", fg="black")
+compScore = Label(root, text=0, font=100, bg="mistyrose", fg="black")
+playerScore.grid(row=1, column=3)  
+compScore.grid(row=1, column=1)     
+
+# Indicators 
+user_indicator = Label(root, font=50, text="USER", bg="mistyrose", fg="black")
+comp_indicator = Label(root, font=50, text="COMPUTER", bg="mistyrose", fg="black")
+user_indicator.grid(row=0, column=3)
+comp_indicator.grid(row=0, column=1)
+
+# Message Label
+msg = Label(root, font=50, bg="mistyrose", fg="black")
+msg.grid(row=3, column=2)
+
+# Message update
+def updateMessage(x):
+    msg['text'] = x
+
+# Score updates
+def updateUserScore():
+    score = int(playerScore["text"])
+    score += 1
+    playerScore["text"] = str(score)
+
+def updateCompScore():
+    score = int(compScore["text"])
+    score += 1
+    compScore["text"] = str(score)
+
+# Check Winner
+def checkWinner(player, comp):
+    if player == comp:
+        updateMessage("It's a Tie!")
+    elif player == "rock":
+        if comp == "paper":
+            updateMessage("You Lose!")
+            updateCompScore()
+        else:
+            updateMessage("You Win!!")
+            updateUserScore()
+    elif player == "paper":
+        if comp == "scissor":
+            updateMessage("You Lose!")
+            updateCompScore()
+        else:
+            updateMessage("You Win!!")
+            updateUserScore()
+    elif player == "scissor":
+        if comp == "rock":
+            updateMessage("You Lose!")
+            updateCompScore()
+        else:
+            updateMessage("You Win!!")
+            updateUserScore()
+
+# Choices
+choices = ["rock", "paper", "scissor"]
+
+# Choice update
+def updateChoice(x):
+    compChoice = choices[randint(0, 2)]
+
+    # for comp
+    if compChoice == "rock":
+        animate_gif_once(comp_label, rock_img_comp)
+    elif compChoice == "paper":
+        animate_gif_once(comp_label, paper_img_comp)
+    else:
+        animate_gif_once(comp_label, scissor_img_comp)
+
+    # for user
+    stop_animation(user_label)
+    if x == "rock":
+        animate_gif_once(user_label, rock_img)
+    elif x == "paper":
+        animate_gif_once(user_label, paper_img)
+    else:
+        animate_gif_once(user_label, scissor_img)
+
+    # Check winner
+    checkWinner(x, compChoice)
+
+# Buttons
+Button(root, width=20, height=2, text="ROCK", bg="#FF3E4D", fg="white",
+       command=lambda: updateChoice("rock")).grid(row=2, column=1)
+
+Button(root, width=20, height=2, text="PAPER", bg="#5BE5E2", fg="white",
+       command=lambda: updateChoice("paper")).grid(row=2, column=2)
+
+Button(root, width=20, height=2, text="SCISSOR", bg="#FAE952", fg="white",
+       command=lambda: updateChoice("scissor")).grid(row=2, column=3)
+
+root.mainloop()
